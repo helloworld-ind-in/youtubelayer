@@ -13,6 +13,7 @@ import {
 import { CloudDownload, CloudUpload, Play, Trash } from "lucide-react";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
+import { PublishDialog } from "./PublishDialog";
 
 export function VideoCard({ video }) {
 	const { data: session } = useSession();
@@ -37,9 +38,7 @@ export function VideoCard({ video }) {
 				<CardFooter className="flex-col gap-2">
 					{
 						user && user.role === "owner" && video.userId != user.username ? (
-							<Button variant="default" className="w-full">
-								<CloudUpload /> Publish
-							</Button>
+							<PublishDialog video={video} />
 						) : ("")
 					}
 
