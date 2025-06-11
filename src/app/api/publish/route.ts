@@ -8,17 +8,6 @@ import UploadModel from "@/models/Upload.model";
 import { extname } from "path";
 
 export async function POST(request: NextRequest) {
-	// if(process.env.OAUTH_REFRESH_TOKEN === "") {
-	// 	console.log("blank");
-	// } else {
-	// 	console.log("Refresh token: ", process.env.OAUTH_REFRESH_TOKEN);
-	// }
-
-	// return Response.json({
-	// 	success: true,
-	// 	message: "Got the post request"
-	// }, { status: 200 });
-
 	const token = await getToken({ req: request });
 
 	if (!token) {
