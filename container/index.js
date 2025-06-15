@@ -52,7 +52,7 @@ const oauth2Client = new google.auth.OAuth2(
 );
 
 const loadTokens = () => {
-	tokenString = `{ "access_token": "${process.env.OAUTH_ACCESS_TOKEN}", "scope": "${process.env.OAUTH_SCOPE}", "token_type": "${process.env.OAUTH_TOKEN_TYPE}", "expiry_date": "${process.env.OAUTH_EXPIRY_DATE}" }`;
+	tokenString = `{ "access_token": "${process.env.OAUTH_ACCESS_TOKEN}", "refresh_token": "${process.env.OAUTH_REFRESH_TOKEN}", "scope": "${process.env.OAUTH_SCOPE}", "token_type": "${process.env.OAUTH_TOKEN_TYPE}", "refresh_token_expires_in": "${process.env.OAUTH_REFRESH_TOKEN_EXPIRES_IN}", "expiry_date": "${process.env.OAUTH_EXPIRY_DATE}" }`;
 	fss.writeFileSync("tokens.json", tokenString);
 
 	if (fss.existsSync('tokens.json')) {

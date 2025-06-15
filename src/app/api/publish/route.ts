@@ -1,11 +1,12 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ECSClient, RunTaskCommand } from "@aws-sdk/client-ecs";
 import { getToken } from "next-auth/jwt";
 import DBConnect from "@/lib/DBConnect";
 import UserModel from "@/models/User.model";
 import ProjectModel from "@/models/Project.model";
 import UploadModel from "@/models/Upload.model";
-import { extname } from "path";
+import path, { extname } from "path";
+import { existsSync, readFileSync } from "fs";
 
 export async function POST(request: NextRequest) {
 	const token = await getToken({ req: request });
@@ -70,6 +71,17 @@ export async function POST(request: NextRequest) {
 
 		const KEY = `${upload._id}${extname(upload.name)}`;
 
+		const tokenPath = path.resolve(`${"src/oauthTokens/tokens_" + userId + ".json"}`);
+
+		if (!existsSync(tokenPath)) {
+			return NextResponse.json({
+				success: false,
+				message: "You need to login to your Google account first.",
+			}, { status: 401 });
+		}
+
+		const OAUTH_CREDENTIALS = JSON.parse(readFileSync(tokenPath, 'utf8'));
+
 		const ecsClient = new ECSClient({
 			region: process.env.AWS_REGION,
 			credentials: {
@@ -104,11 +116,12 @@ export async function POST(request: NextRequest) {
 						{ name: "YT_TAGS", value: tags },
 						{ name: "YT_PRIVACY", value: privacy },
 
-						{ name: "OAUTH_ACCESS_TOKEN", value: process.env.OAUTH_ACCESS_TOKEN },
-						{ name: "OAUTH_REFRESH_TOKEN", value: process.env.OAUTH_REFRESH_TOKEN },
-						{ name: "OAUTH_SCOPE", value: process.env.OAUTH_SCOPE },
-						{ name: "OAUTH_TOKEN_TYPE", value: process.env.OAUTH_TOKEN_TYPE },
-						{ name: "OAUTH_EXPIRY_DATE", value: process.env.OAUTH_EXPIRY_DATE },
+						{ name: "OAUTH_ACCESS_TOKEN", value: `${OAUTH_CREDENTIALS.access_token}` },
+						{ name: "OAUTH_REFRESH_TOKEN", value: `${OAUTH_CREDENTIALS.refresh_token}` },
+						{ name: "OAUTH_SCOPE", value: `${OAUTH_CREDENTIALS.scope}` },
+						{ name: "OAUTH_TOKEN_TYPE", value: `${OAUTH_CREDENTIALS.token_type}` },
+						{ name: "OAUTH_REFRESH_TOKEN_EXPIRES_IN", value: `${OAUTH_CREDENTIALS.refresh_token_expires_in}` },
+						{ name: "OAUTH_EXPIRY_DATE", value: `${OAUTH_CREDENTIALS.expiry_date}` },
 					]
 				}]
 			}
