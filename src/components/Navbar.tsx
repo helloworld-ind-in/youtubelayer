@@ -19,6 +19,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -28,10 +29,17 @@ export default function Navbar() {
     <nav className="p-2 shadow">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         <a href="/" className="text-xl font-bold mb-4 md:mb-0">YouTubeLayer</a>
-        <div>
+        <div className="flex flex-row justify-center items-center space-x-2">
           {
             session ? (
               <>
+                {
+                  user?.role === "owner" ? (
+                    <GoogleLoginButton />
+                  ) : (
+                    <></>
+                  )
+                }
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                       <Avatar>
