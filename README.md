@@ -1,36 +1,169 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 YouTubeLayer
 
-## Getting Started
+**Tagline:** _Streamline your YouTube video editing and publishing._
 
-First, run the development server:
+## 🚀 Overview
+
+**YouTubeLayer** is a Proof of Concept (PoC) that demonstrates the feasibility of automating YouTube video publishing by integrating:
+
+- **AWS S3** for storing uploaded videos
+- **AWS ECR & ECS** for spinning containers that handle publishing
+- **Google OAuth 2.0** for YouTube login
+- **YouTube API** for video uploads
+
+This PoC validates whether it's possible to:
+- Upload videos to an S3 bucket via code
+- Programmatically launch a container that downloads the video from S3
+- Publish the video to YouTube via the YouTube API
+
+---
+
+## 👥 Target Users
+
+- YouTube Channel Owners
+- Remote Video Editors
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend/Backend:** Next.js
+- **Database:** MongoDB
+- **Cloud Infrastructure:** AWS (S3, ECR, ECS)
+- **Authentication:** Google OAuth 2.0
+- **Video Upload:** YouTube API
+
+---
+
+## ✅ Features in v1
+
+- User registration and sign-in (for owners and editors)
+- Individual dashboards for each user type
+- Project creation and editor assignment by owner
+- Raw and edited video upload functionality
+- Google login for owners to connect YouTube
+- YouTube video publishing from the dashboard (owner)
+
+---
+
+## 🧩 Planned Features (Future Phases)
+
+- Email-based OTP for user registration verification
+- Forgot password, change password, change email
+- Project management (edit/delete project, delete videos)
+- Editor management (remove editor from a project)
+- Google login management (login status, logout, view profile/channel info)
+- UI enhancements based on user role
+
+---
+
+## ⚙️ Getting Started
+
+### 1. Clone and Install
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/roydevashish/youtubelayer.git
+
+cd youtubelayer
+
+npm install
 ```
 
+### 2. Infrastructure Setup
+- Setup a MongoDB database
+- Setup Resend for API Keys
+- Setup/generate a random secret for NextAuth
+- Setup AWS as per the AWS Setup Requirements
+- Setup Google OAuth at Google Cloud Platform for OAuth API Keys
+
+### 3. Setup Environment Variables
+
+Create a `.env` file in the root directory with the following:
+
+```env
+MONGODB_URI=
+RESEND_API_KEY=
+NEXTAUTH_SECRET=
+
+AWS_ACCESS_KEY=
+AWS_SECRET_ACCESS_KEY=
+AWS_BUCKET=
+AWS_REGION=
+AWS_TASK_DEFINITION=
+AWS_CLUSTER=
+AWS_CONTAINER_NAME=
+AWS_SECURITY_GROUP=
+AWS_SUBNET_1=
+AWS_SUBNET_2=
+AWS_SUBNET_3=
+
+OAUTH_CLIENT_ID=
+OAUTH_CLIENT_SECRET=
+OAUTH_REDIRECT_URI=
+```
+
+Create a `.env` file inside `/container/` directory with:
+
+```env
+AWS_ACCESS_KEY=
+AWS_SECRET_ACCESS_KEY=
+AWS_BUCKET=
+AWS_REGION=
+
+OAUTH_CLIENT_ID=
+OAUTH_CLIENT_SECRET=
+OAUTH_REDIRECT_URI=
+```
+
+### 4. Build and Publish container image to ECR
+
+- Build a contianer image from the files inside /contianer
+- Publish the container image at ECR
+
+### 5. Run the development server
+``` bash
+npm run dev
+```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ☁️ AWS Setup Requirements
 
-## Learn More
+- An IAM user with permissions for ECS, ECR, S3
+- An S3 bucket for uploading raw and edited videos
+- An ECR repository to host the container image
+- An ECS cluster to run the container
+- A task definition that spins the container to upload videos to YouTube
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧱 Architecture Overview
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```text
+YouTubeLayer
+│
+├── Frontend/Backend (Next.js)
+│
+├── MongoDB (User/Project Data)
+│
+├── AWS S3 (Video Storage)
+│
+├── AWS ECR (Container Image)
+│
+├── AWS ECS (Runs YouTube Uploader Container)
+│
+└── YouTube API + Google OAuth (For publishing)
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📜 License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+No license specified as of v1 release.
+
+---
+
+## 🙋‍♂️ Maintainer
+
+GitHub: [@roydevashish](https://github.com/roydevashish)
