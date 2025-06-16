@@ -102,7 +102,7 @@ OAUTH_CLIENT_SECRET=
 OAUTH_REDIRECT_URI=
 ```
 
-Create a `.env` file inside `/container/` directory with:
+Create a `.env` file inside `/container` directory with:
 
 ```env
 AWS_ACCESS_KEY=
@@ -117,7 +117,7 @@ OAUTH_REDIRECT_URI=
 
 ### 4. Build and Publish container image to ECR
 
-- Build a contianer image from the files inside /contianer
+- Build a contianer image from the files inside `/container`
 - Publish the container image at ECR
 
 ### 5. Run the development server
