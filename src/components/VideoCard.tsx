@@ -10,12 +10,20 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { CloudDownload, CloudUpload, Play, Trash } from "lucide-react";
+import { CloudDownload, Play, Trash } from "lucide-react";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import { PublishDialog } from "./PublishDialog";
 
-export function VideoCard({ video }) {
+type VideoCardProps = {
+  video: {
+    _id: string;
+		userId: string;
+		name: string;
+  };
+};
+
+export function VideoCard({video}: VideoCardProps) {
 	const { data: session } = useSession();
 	const user: User = session?.user as User;
 

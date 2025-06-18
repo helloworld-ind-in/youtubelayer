@@ -9,11 +9,16 @@ import { toast } from "sonner";
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 
+type Project = {
+  title: string;
+  description: string;
+};
+
 export default function ProjectDetail() {
 	const params = useParams<{ projectId: string }>();
 	const projectId = params.projectId;
 
-	const [projectDetail, setProjectDetail] = useState({});
+	const [projectDetail, setProjectDetail] = useState<Project>();
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -25,7 +30,7 @@ export default function ProjectDetail() {
 				setProjectDetail(response.data.data);
 			} catch (error) {
 				const axiosError = error as AxiosError<APIResponse>;
-				let errorMessage = axiosError.response?.data.message;
+				const errorMessage = axiosError.response?.data.message;
 				toast(errorMessage);
 			} finally {
 				setIsLoading(false);
@@ -33,7 +38,7 @@ export default function ProjectDetail() {
 		}
 
 		fetchProjectDetail();
-	}, []);
+	}, [projectId]);
 	return (
 		<div className="flex justify-center">
 			{
@@ -56,9 +61,9 @@ export default function ProjectDetail() {
 						</CardHeader>
 						<CardContent className="space-y-2">
 							<h1 className="text-2xl">
-								{projectDetail.title}
+								{projectDetail?.title}
 							</h1>
-							<p className="text-justify">{projectDetail.description}</p>
+							<p className="text-justify">{projectDetail?.description}</p>
 						</CardContent>
 						<CardFooter className="flex-col gap-2">
 						</CardFooter>

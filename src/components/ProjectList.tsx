@@ -9,7 +9,7 @@ import { Loader } from "lucide-react";
 
 export default function ProjectList() {
 	const [isLoading, setIsLoading] = useState(false);
-	const [projectDetails, setProjectDetails] = useState([]);
+	const [projectDetails, setProjectDetails] = useState<{_id: string}[]>([]);
 
 	useEffect(() => {
 		const fetchProjectList = async () => {
@@ -20,7 +20,7 @@ export default function ProjectList() {
 				setProjectDetails(response.data.data.projectDetails);
 			} catch (error) {
 				const axiosError = error as AxiosError<APIResponse>;
-				let errorMessage = axiosError.response?.data.message;
+				const errorMessage = axiosError.response?.data.message;
 				toast(errorMessage);
 			} finally {
 				setIsLoading(false);

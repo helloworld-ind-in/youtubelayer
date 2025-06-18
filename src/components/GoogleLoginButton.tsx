@@ -22,7 +22,7 @@ export default function GoogleLoginButton() {
 			}
 		} catch (error) {
 			const axiosError = error as AxiosError<APIResponse>;
-			let errorMessage = axiosError.response?.data.message;
+			const errorMessage = axiosError.response?.data.message;
 			toast(errorMessage);
 		} finally {
 			setIsSubmitting(false);

@@ -10,7 +10,6 @@ import {
 	CardAction,
 	CardContent,
 	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
@@ -21,7 +20,7 @@ export default function UploadCard() {
 	const params = useParams<{ projectId: string }>();
 	const projectId = params.projectId;
 
-	const [file, setFile] = useState();
+	const [file, setFile] = useState<File | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -39,6 +38,7 @@ export default function UploadCard() {
 			const response = await axios.post(`/api/upload/${projectId}`, formData);
 			toast(response.data.message);
 		} catch (error) {
+			console.log(error)
 			toast("Some error occured during file upload.");
 		} finally {
 			setIsUploading(false);

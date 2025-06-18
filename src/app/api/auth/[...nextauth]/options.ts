@@ -4,6 +4,11 @@ import bcrypt from "bcryptjs";
 import DBConnect from "@/lib/DBConnect";
 import UserModel from "@/models/User.model";
 
+export interface credentialsInterface {
+	identifier: string,
+	password: string
+}
+
 export const authOptions: NextAuthOptions = {
 	providers: [
 		CredentialsProvider({
@@ -17,12 +22,7 @@ export const authOptions: NextAuthOptions = {
 				await DBConnect();
 
 				try {
-					const user = await UserModel.findOne({
-						$or: [
-							{ email: credentials.identifier },
-							{ username: credentials.identifier }
-						]
-					});
+					const user = await UserModel.findOne({ email: credentials.identifier });
 
 					if (!user) {
 						throw new Error("No user found with this email.");
@@ -40,8 +40,11 @@ export const authOptions: NextAuthOptions = {
 						throw new Error("Incorrect Password");
 					}
 
-				} catch (err: any) {
-					throw new Error(err);
+				} catch (err: unknown) {
+					if (err instanceof Error) {
+						throw new Error(err.message);
+					}
+					throw new Error("Authorization error");
 				}
 			}
 		})

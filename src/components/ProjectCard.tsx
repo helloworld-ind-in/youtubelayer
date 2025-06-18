@@ -13,7 +13,15 @@ import {
 import { FolderOpen, Trash } from "lucide-react";
 import Link from "next/link";
 
-export default function ProjectCard({ project }) {
+type ProjectDetailType = {
+  project: {
+    _id: string;
+    title?: string;
+    description?: string;
+  };
+};
+
+export default function ProjectCard({project}: ProjectDetailType) {
 	return (
 		<Card className="w-full max-w-sm">
 			<CardHeader>

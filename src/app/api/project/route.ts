@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
 	const role = token.role;
 	const userId = token.username;
-	let projectDetails: any = [];
+	let projectDetails = [];
 
 	await DBConnect();
 

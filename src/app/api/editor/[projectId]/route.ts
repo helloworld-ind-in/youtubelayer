@@ -1,11 +1,11 @@
 import DBConnect from "@/lib/DBConnect";
-import EditorModel, { EditorInterface } from "@/models/Editor.model";
+import EditorModel from "@/models/Editor.model";
 import ProjectModel from "@/models/Project.model";
 import UserModel from "@/models/User.model";
 import { getToken } from "next-auth/jwt";
 import { NextRequest } from "next/server";
 
-export async function GET(request: NextRequest, { params }) {
+export async function GET(request: NextRequest) {
 	const token = await getToken({ req: request });
 
 	if (!token) {
@@ -17,8 +17,9 @@ export async function GET(request: NextRequest, { params }) {
 
 	const role = token.role;
 	const userId = token.username;
-	const param = await params;
-	const projectId = param.projectId;
+	const url = new URL(request.url);
+	const pathnameParts = url.pathname.split("/");
+	const projectId = pathnameParts[pathnameParts.length - 1];
 
 	await DBConnect();
 
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest, { params }) {
 			}, { status: 404 });
 		}
 
-		let projectEditors: any;
+		let projectEditors = [];
 
 		switch (role) {
 			case "owner": {
@@ -51,12 +52,12 @@ export async function GET(request: NextRequest, { params }) {
 					}, { status: 401 });
 				}
 
-				let tempProjectEditors = await EditorModel.find({ projectId });
-				let editorIds = tempProjectEditors.map(editor => editor.editorId.toString());
-				let users = await UserModel.find({ _id: { $in: editorIds } }, 'email');
+				const tempProjectEditors = await EditorModel.find({ projectId });
+				const editorIds = tempProjectEditors.map(editor => editor.editorId.toString());
+				const users: { _id: string, email: string }[] = await UserModel.find({ _id: { $in: editorIds } }, 'email');
 
 				// Convert user array to a lookup map for quick access
-				let userMap = {};
+				const userMap: { [key: string]: string } = {};
 				users.forEach(user => {
 					userMap[user._id.toString()] = user.email;
 				});
@@ -91,7 +92,7 @@ export async function GET(request: NextRequest, { params }) {
 	}
 }
 
-export async function POST(request: NextRequest, { params }) {
+export async function POST(request: NextRequest) {
 	const token = await getToken({ req: request });
 
 	if (!token) {
@@ -103,8 +104,9 @@ export async function POST(request: NextRequest, { params }) {
 
 	const role = token.role;
 	const userId = token.username;
-	const param = await params;
-	const projectId = param.projectId;
+	const url = new URL(request.url);
+	const pathnameParts = url.pathname.split("/");
+	const projectId = pathnameParts[pathnameParts.length - 1];
 	const { email } = await request.json();
 
 	await DBConnect();

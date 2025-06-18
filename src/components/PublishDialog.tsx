@@ -32,7 +32,14 @@ import {
 import { CloudUpload, Loader2 } from "lucide-react";
 import { PublishSchema } from "@/zod-schemas/Publish.zod";
 
-export function PublishDialog({ video }) {
+type VideoCardProps = {
+  video: {
+    _id: string;
+    userId: string;
+  };
+};
+
+export function PublishDialog({video}: VideoCardProps) {
 	const params = useParams<{ projectId: string }>();
 	const projectId = params.projectId;
 
@@ -59,7 +66,7 @@ export function PublishDialog({ video }) {
 			toast(response.data.message);
 		} catch (error) {
 			const axiosError = error as AxiosError<APIResponse>;
-			let errorMessage = axiosError.response?.data.message;
+			const errorMessage = axiosError.response?.data.message;
 			toast(errorMessage);
 		} finally {
 			form.setValue("title", "");

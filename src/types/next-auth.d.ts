@@ -5,6 +5,7 @@ declare module "next-auth" {
 		_id?: string;
 		isVerified?: boolean;
 		email?: string;
+		username?: string;
 		role?: string;
 	}
 

@@ -8,7 +8,7 @@ import { NextRequest } from "next/server";
 import { extname } from "path";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
-export async function GET(request: NextRequest, { params }) {
+export async function GET(request: NextRequest) {
 	const token = await getToken({ req: request });
 
 	if (!token) {
@@ -20,8 +20,9 @@ export async function GET(request: NextRequest, { params }) {
 
 	const role = token.role;
 	const userId = token.username;
-	const param = await params;
-	const projectId = param.projectId;
+	const url = new URL(request.url);
+	const pathnameParts = url.pathname.split("/");
+	const projectId = pathnameParts[pathnameParts.length - 1];
 
 	await DBConnect();
 
@@ -104,7 +105,7 @@ export async function GET(request: NextRequest, { params }) {
 	}
 }
 
-export async function POST(request: NextRequest, { params }) {
+export async function POST(request: NextRequest) {
 	const token = await getToken({ req: request });
 
 	if (!token) {
@@ -116,9 +117,9 @@ export async function POST(request: NextRequest, { params }) {
 
 	const role = token.role;
 	const userId = token.username;
-	const param = await params;
-	const projectId = param.projectId;
-
+	const url = new URL(request.url);
+	const pathnameParts = url.pathname.split("/");
+	const projectId = pathnameParts[pathnameParts.length - 1];
 	await DBConnect();
 
 	try {
@@ -188,10 +189,10 @@ export async function POST(request: NextRequest, { params }) {
 		const savedUpload = await newUpload.save();
 
 		const s3client: S3Client = new S3Client({
-			region: process.env.AWS_REGION,
+			region: process.env.AWS_REGION as string,
 			credentials: {
-				accessKeyId: process.env.AWS_ACCESS_KEY,
-				secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+				accessKeyId: process.env.AWS_ACCESS_KEY as string,
+				secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string
 			}
 		});
 
@@ -207,7 +208,7 @@ export async function POST(request: NextRequest, { params }) {
 			ContentType: "video/*"
 		});
 
-		const response = await s3client.send(command);
+		await s3client.send(command);
 
 		return Response.json({
 			success: true,

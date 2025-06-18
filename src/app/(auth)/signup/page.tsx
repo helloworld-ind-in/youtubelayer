@@ -26,13 +26,10 @@ import {
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { APIResponse } from "@/types/APIResponse";
 import { Loader2 } from "lucide-react";
 
 export default function SignupPage() {
-  const router = useRouter()
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof SignupSchema>>({
@@ -52,7 +49,7 @@ export default function SignupPage() {
       toast(response.data.message);
     } catch (error) {
       const axiosError = error as AxiosError<APIResponse>;
-      let errorMessage = axiosError.response?.data.message;
+      const errorMessage = axiosError.response?.data.message; // changed from let to const to fix compile error
       toast(errorMessage);
     } finally {
       form.setValue("email", "");

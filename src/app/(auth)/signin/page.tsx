@@ -45,6 +45,7 @@ export default function SignInPage() {
         router.replace("/");
       }
     } catch (error) {
+      console.log(error);   // to fix compile error
       toast("Incorrect username or password.");
     }
   }

@@ -2,10 +2,11 @@ import DBConnect from "@/lib/DBConnect";
 import EditorModel from "@/models/Editor.model";
 import ProjectModel from "@/models/Project.model";
 import UserModel from "@/models/User.model";
+import { Types } from "mongoose";
 import { getToken } from "next-auth/jwt";
 import { NextRequest } from "next/server";
 
-export async function GET(request: NextRequest, { params }) {
+export async function GET(request: NextRequest) {
 	const token = await getToken({ req: request });
 
 	if (!token) {
@@ -17,8 +18,9 @@ export async function GET(request: NextRequest, { params }) {
 
 	const role = token.role;
 	const userId = token.username;
-	const param = await params;
-	const projectId = param.projectId;
+	const url = new URL(request.url);
+	const pathnameParts = url.pathname.split("/");
+	const projectId = pathnameParts[pathnameParts.length - 1];
 
 	await DBConnect();
 
@@ -31,7 +33,14 @@ export async function GET(request: NextRequest, { params }) {
 			}, { status: 401 });
 		}
 
-		let projectDetail: any;
+		interface projectDetailInterface {
+			_id: Types.ObjectId,
+			title: string,
+			description: string,
+			userId: string
+		}
+
+		let projectDetail: projectDetailInterface | null;
 
 		switch (role) {
 			case "owner": {
@@ -57,7 +66,6 @@ export async function GET(request: NextRequest, { params }) {
 				projectDetail = await ProjectModel.findOne({ _id: projectId });
 				break;
 			}
-
 			default: {
 				return Response.json({
 					sucess: false,

@@ -83,31 +83,31 @@ export async function POST(request: NextRequest) {
 		const OAUTH_CREDENTIALS = JSON.parse(readFileSync(tokenPath, 'utf8'));
 
 		const ecsClient = new ECSClient({
-			region: process.env.AWS_REGION,
+			region: process.env.AWS_REGION as string,
 			credentials: {
-				accessKeyId: process.env.AWS_ACCESS_KEY,
-				secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+				accessKeyId: process.env.AWS_ACCESS_KEY as string,
+				secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string
 			},
 		});
 
 		const runTaskCommand = new RunTaskCommand({
-			taskDefinition: process.env.AWS_TASK_DEFINITION,
-			cluster: process.env.AWS_CLUSTER,
+			taskDefinition: process.env.AWS_TASK_DEFINITION as string,
+			cluster: process.env.AWS_CLUSTER as string,
 			launchType: "FARGATE",
 			networkConfiguration: {
 				awsvpcConfiguration: {
 					assignPublicIp: "ENABLED",
-					securityGroups: [process.env.AWS_SECURITY_GROUP],
+					securityGroups: [process.env.AWS_SECURITY_GROUP as string],
 					subnets: [
-						process.env.AWS_SUBNET_1,
-						process.env.AWS_SUBNET_2,
-						process.env.AWS_SUBNET_3
+						process.env.AWS_SUBNET_1 as string,
+						process.env.AWS_SUBNET_2 as string,
+						process.env.AWS_SUBNET_3 as string
 					]
 				}
 			},
 			overrides: {
 				containerOverrides: [{
-					name: process.env.AWS_CONTAINER_NAME,
+					name: process.env.AWS_CONTAINER_NAME as string,
 					environment: [
 						{ name: "AWS_KEY", value: KEY },
 
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
 			}
 		});
 
-		const response = await ecsClient.send(runTaskCommand);
+		await ecsClient.send(runTaskCommand);
 
 		return Response.json({
 			success: true,

@@ -49,13 +49,13 @@ export function CreateProjectDialog() {
 		setIsSubmitting(true);
 
 		try {
-			const response = await axios.post<APIResponse>("/api/project", data);
+			const response = await axios.post("/api/project", data);
 			toast(response.data.message);
 			const projectId = response.data.data?._id;
 			router.replace(`/project/${projectId}`);
 		} catch (error) {
 			const axiosError = error as AxiosError<APIResponse>;
-			let errorMessage = axiosError.response?.data.message;
+			const errorMessage = axiosError.response?.data.message;
 			toast(errorMessage);
 		} finally {
 			setIsSubmitting(false);

@@ -8,15 +8,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import GoogleLoginButton from "./GoogleLoginButton";
@@ -28,7 +23,7 @@ export default function Navbar() {
   return (
     <nav className="p-2 shadow">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-        <a href="/" className="text-xl font-bold mb-4 md:mb-0">YouTubeLayer</a>
+        <Link href="/" className="text-xl font-bold mb-4 md:mb-0">YouTubeLayer</Link>
         <div className="flex flex-row justify-center items-center space-x-2">
           {
             session ? (

@@ -25,11 +25,15 @@ import * as z from "zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { EditorSchema } from "@/zod-schemas/Editor.zod";
 
+export type Props = {
+	email: string
+};
+
 export default function ProjectEditor() {
 	const params = useParams<{ projectId: string }>();
 	const projectId = params.projectId;
 
-	const [projectEditors, setProjectEditors] = useState([]);
+	const [projectEditors, setProjectEditors] = useState<{ _id: string, email: string }[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -42,7 +46,7 @@ export default function ProjectEditor() {
 				setProjectEditors(response.data.data.projectEditors);
 			} catch (error) {
 				const axiosError = error as AxiosError<APIResponse>;
-				let errorMessage = axiosError.response?.data.message;
+				const errorMessage = axiosError.response?.data.message;
 				toast(errorMessage);
 			} finally {
 				setIsLoading(false);
@@ -50,7 +54,7 @@ export default function ProjectEditor() {
 		}
 
 		fetchProjectEditors();
-	}, []);
+	}, [projectId]);
 
 	return (
 		<div className="flex justify-center">
@@ -72,7 +76,7 @@ export default function ProjectEditor() {
 							</section>
 						) : (
 							projectEditors.map((editor) => (
-								<EditorCard key={editor._id} editor={editor} />
+								<EditorCard key={editor._id} email={editor.email} />
 							))
 						)
 					}
@@ -84,10 +88,10 @@ export default function ProjectEditor() {
 	);
 }
 
-export function EditorCard({ editor }) {
+export function EditorCard({ email }: Props) {
 	return (
 		<section className="flex flex-row justify-between items-center shadow p-2 rounded bg-slate-50">
-			{editor.email}
+			{email}
 			<Button variant="destructive"><Trash /></Button>
 		</section>
 	);
@@ -114,7 +118,7 @@ export function AddEditorDialog() {
 			toast(response.data.message);
 		} catch (error) {
 			const axiosError = error as AxiosError<APIResponse>;
-			let errorMessage = axiosError.response?.data.message;
+			const errorMessage = axiosError.response?.data.message;
 			toast(errorMessage);
 		} finally {
 			form.setValue("email", "");

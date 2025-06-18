@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       }, { status: 401 });
     }
 
-    const code: string = request.nextUrl.searchParams.get("code");
+    const code: string | null = request.nextUrl.searchParams.get("code");
 
     const oAuth2Client = new OAuth2Client(
       process.env.OAUTH_CLIENT_ID,
@@ -45,12 +45,14 @@ export async function GET(request: NextRequest) {
       process.env.OAUTH_REDIRECT_URI
     );
 
-    const { tokens } = await oAuth2Client.getToken(code);
-    oAuth2Client.setCredentials(tokens);
+    if(code != null) {
+      const { tokens } = await oAuth2Client.getToken(code);
+      oAuth2Client.setCredentials(tokens);
 
-    const tokenPath = path.resolve(`${"src/oauthTokens/tokens_" + userId + ".json"}`);
+      const tokenPath = path.resolve(`${"src/oauthTokens/tokens_" + userId + ".json"}`);
+      writeFileSync(tokenPath, JSON.stringify(tokens));
+    }
 
-    writeFileSync(tokenPath, JSON.stringify(tokens));
     return NextResponse.redirect(new URL("/", request.url));
   } catch (error) {
     console.log("Error: Unable to save YouTube login tokens.");

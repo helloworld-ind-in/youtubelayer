@@ -13,8 +13,8 @@ export default function UploadList() {
 	const projectId = params.projectId;
 
 	const [isLoading, setIsLoading] = useState(false);
-	const [ownerUploads, setOwnerUploads] = useState([]);
-	const [editorUploads, setEditorUploads] = useState([]);
+	const [ownerUploads, setOwnerUploads] = useState<{_id: string, userId: string, name: string}[]>([]);
+	const [editorUploads, setEditorUploads] = useState<{_id: string, userId: string, name: string}[]>([]);
 
 	useEffect(() => {
 		const fetchUploadDetails = async () => {
@@ -26,7 +26,7 @@ export default function UploadList() {
 				setEditorUploads(response.data.data.editorUpload);
 			} catch (error) {
 				const axiosError = error as AxiosError<APIResponse>;
-				let errorMessage = axiosError.response?.data.message;
+				const errorMessage = axiosError.response?.data.message;
 				toast(errorMessage);
 			} finally {
 				setIsLoading(false);
@@ -34,7 +34,7 @@ export default function UploadList() {
 		}
 
 		fetchUploadDetails();
-	}, []);
+	}, [projectId]);
 	return (
 		<div>
 			<h1 className="font-extrabold text-2xl m-4">Owner Uploads</h1>
