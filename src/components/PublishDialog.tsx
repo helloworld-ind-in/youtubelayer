@@ -61,7 +61,7 @@ export function PublishDialog({video}: VideoCardProps) {
 		setIsSubmitting(true);
 
 		try {
-			const response = await axios.post<APIResponse>("http://localhost:3000/api/publish", data);
+			const response = await axios.post<APIResponse>("/api/publish", data);
 			console.log(response);
 			toast(response.data.message);
 		} catch (error) {
