@@ -83,33 +83,33 @@ export async function POST(request: NextRequest) {
 		const OAUTH_CREDENTIALS = JSON.parse(readFileSync(tokenPath, 'utf8'));
 
 		const ecsClient = new ECSClient({
-			region: process.env.AWS_REGION as string,
+			region: process.env.YT_AWS_REGION as string,
 			credentials: {
-				accessKeyId: process.env.AWS_ACCESS_KEY as string,
-				secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string
+				accessKeyId: process.env.YT_AWS_ACCESS_KEY as string,
+				secretAccessKey: process.env.YT_AWS_SECRET_ACCESS_KEY as string
 			},
 		});
 
 		const runTaskCommand = new RunTaskCommand({
-			taskDefinition: process.env.AWS_TASK_DEFINITION as string,
-			cluster: process.env.AWS_CLUSTER as string,
+			taskDefinition: process.env.YT_AWS_TASK_DEFINITION as string,
+			cluster: process.env.YT_AWS_CLUSTER as string,
 			launchType: "FARGATE",
 			networkConfiguration: {
 				awsvpcConfiguration: {
 					assignPublicIp: "ENABLED",
-					securityGroups: [process.env.AWS_SECURITY_GROUP as string],
+					securityGroups: [process.env.YT_AWS_SECURITY_GROUP as string],
 					subnets: [
-						process.env.AWS_SUBNET_1 as string,
-						process.env.AWS_SUBNET_2 as string,
-						process.env.AWS_SUBNET_3 as string
+						process.env.YT_AWS_SUBNET_1 as string,
+						process.env.YT_AWS_SUBNET_2 as string,
+						process.env.YT_AWS_SUBNET_3 as string
 					]
 				}
 			},
 			overrides: {
 				containerOverrides: [{
-					name: process.env.AWS_CONTAINER_NAME as string,
+					name: process.env.YT_AWS_CONTAINER_NAME as string,
 					environment: [
-						{ name: "AWS_KEY", value: KEY },
+						{ name: "YT_AWS_KEY", value: KEY },
 
 						{ name: "YT_TITLE", value: title },
 						{ name: "YT_DESCRIPTION", value: description },

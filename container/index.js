@@ -9,15 +9,15 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const s3Client = new S3Client({
-	region: process.env.AWS_REGION,
+	region: process.env.YT_AWS_REGION,
 	credentials: {
-		accessKeyId: process.env.AWS_ACCESS_KEY,
-		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+		accessKeyId: process.env.YT_AWS_ACCESS_KEY,
+		secretAccessKey: process.env.YT_AWS_SECRET_ACCESS_KEY
 	}
 });
 
-const BUCKET = process.env.AWS_BUCKET;
-const KEY = process.env.AWS_KEY;
+const BUCKET = process.env.YT_AWS_BUCKET;
+const KEY = process.env.YT_AWS_KEY;
 
 async function getVideoFromS3Bucket() {
 	try {

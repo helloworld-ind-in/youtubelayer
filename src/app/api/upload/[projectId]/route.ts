@@ -189,10 +189,10 @@ export async function POST(request: NextRequest) {
 		const savedUpload = await newUpload.save();
 
 		const s3client: S3Client = new S3Client({
-			region: process.env.AWS_REGION as string,
+			region: process.env.YT_AWS_REGION as string,
 			credentials: {
-				accessKeyId: process.env.AWS_ACCESS_KEY as string,
-				secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string
+				accessKeyId: process.env.YT_AWS_ACCESS_KEY as string,
+				secretAccessKey: process.env.YT_AWS_SECRET_ACCESS_KEY as string
 			}
 		});
 
@@ -202,7 +202,7 @@ export async function POST(request: NextRequest) {
 		const newFileName = `${savedUpload._id}${extname(file.name)}`;
 
 		const command = new PutObjectCommand({
-			Bucket: process.env.AWS_BUCKET,
+			Bucket: process.env.YT_AWS_BUCKET,
 			Key: newFileName,
 			Body: buffer,
 			ContentType: "video/*"
