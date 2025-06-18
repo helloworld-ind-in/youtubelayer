@@ -71,16 +71,16 @@ export async function POST(request: NextRequest) {
 
 		const KEY = `${upload._id}${extname(upload.name)}`;
 
-		const tokenPath = path.resolve(`${"src/oauthTokens/tokens_" + userId + ".json"}`);
+		const token = user.token;
 
-		if (!existsSync(tokenPath)) {
+		if (token === null) {
 			return NextResponse.json({
 				success: false,
 				message: "You need to login to your Google account first.",
 			}, { status: 401 });
 		}
 
-		const OAUTH_CREDENTIALS = JSON.parse(readFileSync(tokenPath, 'utf8'));
+		const OAUTH_CREDENTIALS = JSON.parse(token);
 
 		const ecsClient = new ECSClient({
 			region: process.env.YT_AWS_REGION as string,

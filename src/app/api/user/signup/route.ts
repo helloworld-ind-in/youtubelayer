@@ -26,6 +26,7 @@ export async function POST(request: Request) {
 		const hashedPassword = await bcrypt.hash(password, 10);
 		const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 		const verificationCodeExpiry = new Date(Date.now() + 3600000);
+		const token = null;
 
 		let newSavedUser;
 
@@ -42,7 +43,8 @@ export async function POST(request: Request) {
 				role,
 				verificationCode,
 				verificationCodeExpiry,
-				isVerified: true
+				isVerified: true,
+				token
 			});
 
 			newSavedUser = await newUser.save();

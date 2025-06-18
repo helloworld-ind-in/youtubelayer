@@ -7,6 +7,7 @@ export interface User extends Document {
   verificationCode: string;
   verificationCodeExpiry: Date;
   isVerified: boolean;
+  token: string;
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -36,6 +37,10 @@ const UserSchema: Schema<User> = new Schema({
     type: Boolean,
     default: false
   },
+  token: {
+    type: String,
+    default: null
+  }
 }, { timestamps: true });
 
 const UserModel = (mongoose.models.User as mongoose.Model<User>) || (mongoose.model<User>("User", UserSchema));

@@ -45,12 +45,20 @@ export async function GET(request: NextRequest) {
       process.env.OAUTH_REDIRECT_URI
     );
 
-    if(code != null) {
+    if (code != null) {
       const { tokens } = await oAuth2Client.getToken(code);
       oAuth2Client.setCredentials(tokens);
 
-      const tokenPath = path.resolve(`${"src/oauthTokens/tokens_" + userId + ".json"}`);
-      writeFileSync(tokenPath, JSON.stringify(tokens));
+      const user = await UserModel.findOne({ _id: userId, role: "owner" });
+      if (!user) {
+        return Response.json({
+          sucess: false,
+          message: "Unauthorized: You are not authorized to login to YouTube."
+        }, { status: 401 });
+      }
+
+      user.token = JSON.stringify(tokens);
+      await user.save();
     }
 
     return NextResponse.redirect(new URL("/", request.url));

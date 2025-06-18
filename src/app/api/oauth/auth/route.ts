@@ -43,10 +43,8 @@ export async function GET(request: NextRequest) {
       process.env.OAUTH_REDIRECT_URI
     );
 
-    const tokenPath = path.resolve(`${"src/oauthTokens/tokens_" + userId + ".json"}`);
-
-    if (existsSync(tokenPath)) {
-      const tokens = JSON.parse(readFileSync(tokenPath, 'utf8'));
+    if (user.token != null) {
+      const tokens = JSON.parse(user.token);
       oAuth2Client.setCredentials(tokens);
 
       return NextResponse.json({
