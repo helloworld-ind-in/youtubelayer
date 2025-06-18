@@ -28,6 +28,14 @@ export default function UploadCard() {
 		e.preventDefault();
 
 		if (!file) {
+			toast("Please select a video file.");
+			setIsUploading(false);
+			return;
+		}
+
+		if(file.size > 4270000) {
+			toast("Video file size cannot be more then 4MB.");
+			setIsUploading(false);
 			return;
 		}
 
