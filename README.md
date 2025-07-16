@@ -57,6 +57,35 @@ This PoC validates whether it's possible to:
 
 ---
 
+## 🐞 Known Issues / Bugs
+
+This is a list of the known bugs and issues identified in the **v1 release** of the **YouTubeLayer** platform.
+
+### 1. Login Redirect Issue
+- After successful login, the user is redirected to the **home page** instead of the **dashboard**.  
+- A **manual refresh** is required for the dashboard to appear correctly.
+
+### 2. Editor Assignment UI Not Updating
+- After assigning an editor to a project, the list of editors **does not update automatically**.  
+- A **manual refresh** is needed to reflect the changes.
+
+### 3. Video Upload UI Delay
+- After uploading a video to a project, the updated list of videos is **not rendered automatically**.  
+- Users must **refresh the page manually** to see the uploaded content.
+
+### 4. Google Login Redirection
+- After logging in with Google, users are always redirected to the **dashboard**, regardless of their original navigation path or intended destination.
+
+### 5. Persistent Google Login Token Issue
+- Once a user logs in via Google, they **cannot log in again in future sessions**.  
+- The authentication tokens are **set indefinitely**, which prevents proper re-authentication and token renewal.
+
+### 6. Session Timeout Missing
+- Users remain logged in **indefinitely** unless they **manually log out**.  
+- There is currently **no session timeout** or auto-logout mechanism based on inactivity.
+
+---
+
 ## ⚙️ Getting Started
 
 ### 1. Clone and Install
