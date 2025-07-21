@@ -42,7 +42,7 @@ export default function SignInPage() {
       }
 
       if (result?.url) {
-        router.replace("/");
+        router.replace("/dashboard");
       }
     } catch (error) {
       console.log(error);   // to fix compile error
