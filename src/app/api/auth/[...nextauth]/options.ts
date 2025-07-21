@@ -21,8 +21,10 @@ export const authOptions: NextAuthOptions = {
 			async authorize(credentials: any): Promise<any> {
 				await DBConnect();
 
+				console.log(credentials)
+
 				try {
-					const user = await UserModel.findOne({ email: credentials.identifier });
+					const user = await UserModel.findOne({ email: credentials.identifier.toLowerCase() });
 
 					if (!user) {
 						throw new Error("No user found with this email.");

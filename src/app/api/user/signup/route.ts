@@ -8,9 +8,10 @@ export async function POST(request: Request) {
 
 	try {
 		const { email, password, role } = await request.json();
+		const lowercaseEmail = email.toLowerCase();
 
 		const existingUser = await UserModel.findOne({
-			email,
+			email: lowercaseEmail,
 			isVerified: true
 		});
 
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
 			}, { status: 400 });
 		}
 
-		const existingUserByEmail = await UserModel.findOne({ email });
+		const existingUserByEmail = await UserModel.findOne({ email: lowercaseEmail });
 
 		const hashedPassword = await bcrypt.hash(password, 10);
 		const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
 			newSavedUser = await existingUserByEmail.save();
 		} else {
 			const newUser = new UserModel({
-				email,
+				email: lowercaseEmail,
 				password: hashedPassword,
 				role,
 				verificationCode,
