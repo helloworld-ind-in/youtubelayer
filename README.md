@@ -84,6 +84,10 @@ This is a list of the known bugs and issues identified in the **v1 release** of 
 - Users remain logged in **indefinitely** unless they **manually log out**.  
 - There is currently **no session timeout** or auto-logout mechanism based on inactivity.
 
+### 7. Login Fails
+- Login fails when a user enters their email in uppercase or mixed case.
+- Login only succeeds when the email is entered with the exact same case (uppercase/lowercase) as it was during registration.
+
 ---
 
 ## ⚙️ Getting Started
