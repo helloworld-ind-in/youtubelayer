@@ -21,8 +21,6 @@ export const authOptions: NextAuthOptions = {
 			async authorize(credentials: any): Promise<any> {
 				await DBConnect();
 
-				console.log(credentials)
-
 				try {
 					const user = await UserModel.findOne({ email: credentials.identifier.toLowerCase() });
 
