@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react"
+import { Loader, Loader2 } from "lucide-react"
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { SigninSchema } from "@/zod-schemas/Signin.zod";
@@ -51,16 +51,16 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    <div className="flex justify-center items-center">
+      <div className="w-full max-w-md p-8 space-y-4 rounded-lg shadow-2xl">
         <div className="text-left space-y-2">
           <h1 className="text-4xl font-extrabold tracking-tight">YouTubeLayer</h1>
-          <p>Signin to streamline your YouTube video publishing.</p>
-          <p>Not a member yet? <Link href="/signup" className="text-blue-500">Signup</Link> now!</p>
+          <p>Login to streamline your YouTube video publishing.</p>
+          <p>Not a member yet? <Link href="/signup" className="text-blue-500">Register</Link> now!</p>
         </div>
         <Form {...form}>
-          <h1 className="text-3xl font-bold">Signin</h1>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <h1 className="text-3xl font-bold">Login</h1>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="identifier"
@@ -100,14 +100,7 @@ export default function SignInPage() {
             />
 
             <Button type="submit" disabled={isSubmitting}>
-              {
-                isSubmitting ?
-                  (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
-                    </>
-                  ) : ('Signin')
-              }
+              {isSubmitting ? (<Loader className="animate-spin" />) : ('Login')}
             </Button>
           </form>
         </Form>

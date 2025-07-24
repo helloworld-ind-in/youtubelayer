@@ -27,7 +27,7 @@ import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { APIResponse } from "@/types/APIResponse";
-import { Loader2 } from "lucide-react";
+import { Loader, Loader2 } from "lucide-react";
 
 export default function SignupPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,16 +59,16 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-200">
-      <div className="w-full max-w-md p-8 space-y-4 bg-white rounded-lg shadow-md">
+    <div className="flex justify-center items-center">
+      <div className="w-full max-w-md p-8 space-y-4 rounded-lg shadow-2xl">
         <div className="text-left space-y-2">
           <h1 className="text-4xl font-extrabold tracking-tight">YouTubeLayer</h1>
-          <p>Signup to streamline your YouTube video publishing.</p>
-          <p>Already a member? <Link href="/signin" className="text-blue-500">Signin</Link> now!</p>
+          <p>Register to streamline your YouTube video publishing.</p>
+          <p>Already a member? <Link href="/signin" className="text-blue-500">Login</Link> now!</p>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <h1 className="text-3xl font-bold">Signup</h1>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <h1 className="text-3xl font-bold">Register</h1>
 
             <FormField
               control={form.control}
@@ -129,14 +129,7 @@ export default function SignupPage() {
               )}
             />
             <Button type="submit" disabled={isSubmitting}>
-              {
-                isSubmitting ?
-                  (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
-                    </>
-                  ) : ('Signup')
-              }
+              {isSubmitting ? (<Loader className="animate-spin" />) : ('Register')}
             </Button>
           </form>
         </Form>
