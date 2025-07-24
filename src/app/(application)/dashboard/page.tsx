@@ -11,7 +11,6 @@ import { toast } from "sonner";
 
 export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  
   const [reloadProjects, setReloadProjects] = useState<boolean>(false);
   const [projects, setProjects] = useState<ProjectType[]>([]);
 
@@ -19,7 +18,6 @@ export default function DashboardPage() {
     setIsLoading(true);
     try {
       const response = await axios.get("/api/project");
-      console.log(response.data)
       setProjects(response.data.data.projectDetails);
       toast(response.data.message);
     } catch (error) {
@@ -36,19 +34,24 @@ export default function DashboardPage() {
   }, [reloadProjects])
 
   return (
-    <main>
-      <div className="flex justify-between p-4">
-        <h1 className="text-4xl font-bold">Dashboard</h1>
+    <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
+      <div className="flex justify-between">
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900">Dashboard</h1>
         <CreateProjectComponent setReloadProjects={setReloadProjects} />
       </div>
-      <div className="p-6 space-y-6 md:flex flex-wrap space-x-6 justify-around">
-        {isLoading ? (<div className="flex justify-center items-center"><Loader className="animate-spin" /></div>) : (
-          <>
-            {projects.map((project) => (<ProjectCardComponent key={project._id} project={project} />))}
-            <div className="md:min-w-sm"></div>
-          </>
-        )}
-      </div>
+      {
+        isLoading ? (
+          <div className="flex justify-center items-center">
+            <Loader className="animate-spin" />
+          </div>
+        ) : (
+          <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-3 xl:gap-x-8">
+            {projects.map((project) => (
+              <ProjectCardComponent key={project._id} project={project} />
+            ))}
+          </div>
+        )
+      }
     </main>
   );
 }

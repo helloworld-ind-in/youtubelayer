@@ -94,7 +94,7 @@ export default function CreateProjectComponent(props: {setReloadProjects: Functi
             />
 
             <DialogFooter className="sm:justify-end">
-              <Button type="submit">
+              <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? (<Loader className="animate-spin" />) : ("Create")}
               </Button>
               <DialogClose asChild>

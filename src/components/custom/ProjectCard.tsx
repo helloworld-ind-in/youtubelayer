@@ -6,7 +6,7 @@ import { ProjectType } from "./PropType";
 
 export default function ProjectCardComponent(props: { project: ProjectType }) {
   return (
-    <Card key={props.project._id} className="md:min-w-sm">
+    <Card key={props.project._id} className="group relative">
       <CardHeader>
         <Link href={`/project/${props.project._id}`}>
           <CardTitle>{props.project.title}</CardTitle>
