@@ -108,6 +108,7 @@ export async function POST(request: NextRequest) {
 	const pathnameParts = url.pathname.split("/");
 	const projectId = pathnameParts[pathnameParts.length - 1];
 	const { email } = await request.json();
+	const lowercaseEmail = email.toLowerCase();
 
 	await DBConnect();
 
@@ -138,7 +139,7 @@ export async function POST(request: NextRequest) {
 					}, { status: 401 });
 				}
 
-				const editor = await UserModel.findOne({ email, role: "editor" });
+				const editor = await UserModel.findOne({ email: lowercaseEmail, role: "editor" });
 				if (!editor) {
 					return Response.json({
 						success: false,
