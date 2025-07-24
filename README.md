@@ -88,6 +88,10 @@ This is a list of the known bugs and issues identified in the **v1 release** of 
 - Login fails when a user enters their email in uppercase or mixed case.
 - Login only succeeds when the email is entered with the exact same case (uppercase/lowercase) as it was during registration.
 
+### 8. Editor Assignment Fails
+- Fails when a user enters editor's email in uppercase or mixed case.
+- Only succeeds when the email is entered with the exact same case (uppercase/lowercase) as it was during registration.
+
 ---
 
 ## ⚙️ Getting Started
