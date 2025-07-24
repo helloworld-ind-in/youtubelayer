@@ -1,13 +1,16 @@
 import DBConnect from "@/lib/DBConnect";
 import UserModel from "@/models/User.model";
-import { existsSync, readFileSync } from "fs";
 import { OAuth2Client } from "google-auth-library";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
 
 export async function GET(request: NextRequest) {
   const token = await getToken({ req: request });
+  const searchParams = request.nextUrl.searchParams;
+  let next = searchParams.get('next');
+  if(next == null) {
+    next = btoa("/dashboard");
+  }
 
   if (!token) {
     return Response.json({
@@ -56,7 +59,8 @@ export async function GET(request: NextRequest) {
     const authUrl = oAuth2Client.generateAuthUrl({
       access_type: "offline",
       prompt: "consent",
-      scope: ['https://www.googleapis.com/auth/youtube.upload']
+      scope: ['https://www.googleapis.com/auth/youtube.upload'],
+      state: next
     });
 
     return NextResponse.json({

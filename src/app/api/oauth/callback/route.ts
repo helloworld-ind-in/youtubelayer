@@ -1,13 +1,16 @@
 import DBConnect from "@/lib/DBConnect";
 import UserModel from "@/models/User.model";
-import { writeFileSync } from "fs";
 import { OAuth2Client } from "google-auth-library";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
 
 export async function GET(request: NextRequest) {
   const token = await getToken({ req: request });
+  const searchParams = request.nextUrl.searchParams;
+  let state = searchParams.get('state');
+  if(state == null) {
+    state = btoa("/dashboard")
+  }
 
   if (!token) {
     return Response.json({
@@ -61,7 +64,7 @@ export async function GET(request: NextRequest) {
       await user.save();
     }
 
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL(atob(state), request.url));
   } catch (error) {
     console.log("Error: Unable to save YouTube login tokens.");
     console.log(error);
