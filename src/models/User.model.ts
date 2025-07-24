@@ -7,7 +7,7 @@ export interface User extends Document {
   verificationCode: string;
   verificationCodeExpiry: Date;
   isVerified: boolean;
-  token: string;
+  token: string | null;
 }
 
 const UserSchema: Schema<User> = new Schema({
