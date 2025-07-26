@@ -1,7 +1,7 @@
-import { SendVerificationEmail } from "@/lib/resend/SendVerificationEmail";
 import DBConnect from "@/lib/DBConnect";
 import UserModel from "@/models/User.model";
 import bcrypt from "bcryptjs";
+import { SendRegistrationEmail } from "@/lib/resend/SendRegistrationEmail";
 
 export async function POST(request: Request) {
 	await DBConnect();
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 			newSavedUser = await newUser.save();
 		}
 
-		const emailResponse = await SendVerificationEmail(email, verificationCode);
+		const emailResponse = await SendRegistrationEmail(email);
 
 		if (!emailResponse.success) {
 			return Response.json({
