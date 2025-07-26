@@ -185,3 +185,93 @@ export async function POST(request: NextRequest) {
 		}, { status: 500 });
 	}
 }
+
+export async function DELETE(request: NextRequest) {
+	const token = await getToken({ req: request });
+
+	if (!token) {
+		return Response.json({
+			sucess: false,
+			message: "Unauthorized: You need to login."
+		}, { status: 401 });
+	}
+
+	const role = token.role;
+	const userId = token.username;
+	const url = new URL(request.url);
+	const pathnameParts = url.pathname.split("/");
+	const projectId = pathnameParts[pathnameParts.length - 1];
+
+	const body = await request.json();
+	const email = body.email.toLowerCase();
+
+	await DBConnect();
+
+	try {
+		const user = await UserModel.findOne({ _id: userId });
+		if (!user) {
+			return Response.json({
+				success: false,
+				message: "Unauthorized: User doesn't exist."
+			}, { status: 401 });
+		}
+
+		const project = await ProjectModel.findOne({ _id: projectId });
+		if (!project) {
+			return Response.json({
+				success: false,
+				message: "Project does not exits."
+			}, { status: 404 });
+		}
+
+		switch (role) {
+			case "owner": {
+				const isOwner = ProjectModel.findOne({ _id: projectId, userId });
+				if (!isOwner) {
+					return Response.json({
+						success: false,
+						message: "Unauthorized: You don't own this project."
+					}, { status: 401 });
+				}
+
+				const editor = await UserModel.findOne({ email, role: "editor" });
+				if (!editor) {
+					return Response.json({
+						success: false,
+						message: "Editor does not exits."
+					}, { status: 404 });
+				}
+
+				const assignedEditor = await EditorModel.findOne({ projectId, editorId: editor._id });
+				if (!assignedEditor) {
+					return Response.json({
+						success: false,
+						message: "Editor is not assigned to this project."
+					}, { status: 400 });
+				}
+
+
+				await assignedEditor.deleteOne()
+
+				return Response.json({
+					success: true,
+					message: "Editor successfully removed from the project."
+				}, { status: 201 });
+			}
+
+			default: {
+				return Response.json({
+					sucess: false,
+					message: "Unauthorized: You are not authorized to remove editor."
+				}, { status: 401 });
+			}
+		}
+	} catch (error) {
+		console.log("Error: Unable to remove editor from the project.");
+		console.log(error);
+		return Response.json({
+			success: false,
+			message: "Unable to remove editor from the project."
+		}, { status: 500 });
+	}
+}

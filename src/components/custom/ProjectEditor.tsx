@@ -41,7 +41,7 @@ export function ProjectEditorComponent(props: { projectId: string }) {
 
   const [submittingAddEditor, setSubmittingAddEditor] = useState(false);
   const [reloadEditors, setReloadEditors] = useState<boolean>(false);
-  const dialogCloseBtn = useRef<HTMLButtonElement>(null);
+  const addEditorDialogCloseBtn = useRef<HTMLButtonElement>(null);
   const onSubmitAddEditor = async (value: z.infer<typeof EditorSchema>) => {
     setSubmittingAddEditor(true);
 
@@ -55,7 +55,7 @@ export function ProjectEditorComponent(props: { projectId: string }) {
     } finally {
       formAddEditor.setValue("email", "");
       setSubmittingAddEditor(false);
-      dialogCloseBtn.current?.click();
+      addEditorDialogCloseBtn.current?.click();
       setReloadEditors((prev) => !prev);
     }
   }
@@ -108,7 +108,7 @@ export function ProjectEditorComponent(props: { projectId: string }) {
                         {submittingAddEditor ? (<Loader className="animate-spin" />) : ("Add Editor")}
                       </Button>
                       <DialogClose asChild>
-                        <Button variant="destructive" ref={dialogCloseBtn}>Cancel</Button>
+                        <Button variant="destructive" ref={addEditorDialogCloseBtn}>Cancel</Button>
                       </DialogClose>
                     </section>
                   </form>
@@ -129,7 +129,7 @@ export function ProjectEditorComponent(props: { projectId: string }) {
               projectEditors.map((editor) => (
                 <section key={editor._id} className="flex flex-row justify-between items-center shadow p-2 rounded bg-slate-50">
                   {editor.email}
-                  <Button variant="destructive"><Trash /></Button>
+                  <RemoveProjectEditorDialogComponent projectId={props.projectId} email={editor.email} setReloadEditors={setReloadEditors} />
                 </section>
               ))
             )
@@ -140,4 +140,75 @@ export function ProjectEditorComponent(props: { projectId: string }) {
       </Card>
     </div>
   );
+}
+
+export function RemoveProjectEditorDialogComponent(props: {projectId: string, email: string, setReloadEditors: Function}) {
+  const [submittingRemoveEditor, setSubmittingRemoveEditor] = useState(false);
+  const removeEditorDialogCloseBtn = useRef<HTMLButtonElement>(null);
+
+  const formRemoveEditor = useForm<z.infer<typeof EditorSchema>>({
+    resolver: zodResolver(EditorSchema),
+    defaultValues: {
+      email: props.email,
+    }
+  })
+
+  const onSubmitRemoveEditor = async (value: z.infer<typeof EditorSchema>) => {
+    setSubmittingRemoveEditor(true);
+
+    try {
+      const response = await axios.delete<APIResponse>(`/api/editor/${props.projectId}`, { data: value });
+      toast(response.data.message);
+      console.log(response)
+    } catch (error) {
+      const axiosError = error as AxiosError<APIResponse>;
+      const errorMessage = axiosError.response?.data.message;
+      toast(errorMessage);
+    } finally {
+      setSubmittingRemoveEditor(false);
+      removeEditorDialogCloseBtn.current?.click();
+      props.setReloadEditors((prev: boolean) => !prev);
+    }
+  }
+  return (
+    <Dialog>
+      <DialogTrigger asChild><Button variant="destructive"><Trash /></Button></DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you absolutely sure to remove the editor?</DialogTitle>
+          <DialogDescription>
+            This action will remove <b>{props.email}</b> as editor from your project.
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...formRemoveEditor}>
+          <form onSubmit={formRemoveEditor.handleSubmit(onSubmitRemoveEditor)} className="space-y-4">
+            <FormField
+              control={formRemoveEditor.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem className="hidden">
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Email" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Please provide editor's email.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
+              <Button type="submit" disabled={submittingRemoveEditor}>
+                {submittingRemoveEditor ? (<Loader className="animate-spin" />) : ("Remove Editor")}
+              </Button>
+              <DialogClose asChild>
+                <Button variant="outline" ref={removeEditorDialogCloseBtn}>Cancel</Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  )
 }
